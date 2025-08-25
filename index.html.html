@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kotak Positif</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: linear-gradient(135deg, #043927, #0b6623);
+      color: white;
+    }
+    h1 {
+      margin: 10px 0;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      width: 100%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+    .box {
+      perspective: 1000px;
+      cursor: pointer;
+    }
+    .inner {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+    .flipped .inner {
+      transform: rotateY(180deg);
+    }
+    .front, .back {
+      position: absolute;
+      inset: 0;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      padding: 10px;
+      text-align: center;
+    }
+    .front {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .front:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .back {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotateY(180deg);
+    }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .overlay .card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    footer {
+      margin-top: 20px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎁 Pilih Satu Kotak Positif 🎁</h1>
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    Dibuat dengan ❤️ oleh <b>NightFall</b>
+  </footer>
+
+  <!-- Overlay Penutup -->
+  <div id="overlay" class="overlay">
+    <div class="card">
+      <h2>Terima kasih 🙏</h2>
+      <p>Sekarang ayo semangat! ✨</p>
+    </div>
+  </div>
+
+  <script>
+    const messages = [
+      "📚 Belajar itu investasi terbaik untuk masa depanmu.",
+      "🌱 Proses mungkin berat, tapi hasilnya akan indah.",
+      "🚀 Jangan takut gagal, setiap gagal adalah langkah menuju sukses.",
+      "💡 Percaya sama dirimu, kamu lebih kuat dari yang kamu kira.",
+      "🔥 Fokus ke tujuanmu, jangan terpengaruh sama omongan orang.",
+      "✨ Setiap hari adalah kesempatan baru untuk jadi lebih baik.",
+      "🎯 Jangan bandingin prosesmu dengan orang lain, semua punya waktunya.",
+      "🌻 Istirahat juga bagian dari produktivitas.",
+      "🏆 Keberhasilan lahir dari konsistensi kecil setiap hari.",
+      "🌟 Kamu sudah melangkah jauh, jangan berhenti sekarang."
+    ];
+
+    const grid = document.getElementById("grid");
+    const overlay = document.getElementById("overlay");
+
+    // buat 10 kotak
+    for (let i = 1; i <= 10; i++) {
+      const box = document.createElement("div");
+      box.className = "box";
+      box.innerHTML = `
+        <div class="inner">
+          <div class="front">Kotak ${i}</div>
+          <div class="back"></div>
+        </div>
+      `;
+      box.addEventListener("click", () => flipBox(box));
+      grid.appendChild(box);
+    }
+
+    function flipBox(box) {
+      // kalau udah pernah milih, stop
+      if (sessionStorage.getItem("alreadyChosen") === "1") return;
+
+      // isi pesan random
+      const msg = messages[Math.floor(Math.random() * messages.length)];
+      box.querySelector(".back").innerText = msg;
+      box.classList.add("flipped");
+
+     
+      // set flag (cuma sekali per sesi buka web)
+      sessionStorage.setItem("alreadyChosen", "1");
+
+
+      // munculin overlay penutup setelah animasi flip
+      setTimeout(() => {
+        overlay.classList.add("show");
+      }, 7000);
+    }
+  </script>
+</body>
+</html>
